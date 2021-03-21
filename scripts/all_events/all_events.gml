@@ -36,10 +36,10 @@ function draw_candybox(_x, _y, _candy) {
 			with(obj) {
 				candy_count = controller.candy_count;
 			
-				jar_show_x = lerp_float(jar_show_x, jar_x, 5 / run_speed, 4);
+				jar_show_x = lerp_float(jar_show_x, jar_pos_x, 5 / run_speed, 4);
 				jar_show_y = lerp_float(jar_show_y, jar_y, 5 / run_speed, 4);
 				
-				return (jar_show_x == jar_x && jar_show_y == jar_y);
+				return (jar_show_x == jar_pos_x && jar_show_y == jar_y);
 			}
 		}
 		static jar_return = function() {

@@ -17,10 +17,12 @@
 		var side = (window_get_width() / 2 - 150) / 2;
 		jar_x = !count? side : window_get_width() - side;
 		jar_y = window_get_height() / 2;
+		
+		jar_pos_x   = !count? side * 1.8 : window_get_width() - side * 1.8;
 		jar_x_start = window_get_width() / 2;
 		jar_y_start = 300;
-		jar_show_x = jar_x_start;
-		jar_show_y = jar_y_start;
+		jar_show_x  = jar_x_start;
+		jar_show_y  = jar_y_start;
 	
 		area = [jar_x - 200, jar_x + 200, 100, window_get_height() - 160];
 	}

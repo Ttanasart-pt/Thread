@@ -1,7 +1,7 @@
 {
   "resources": [
     {"id":{"name":"s_simulation","path":"sprites/s_simulation/s_simulation.yy",},"order":1,},
-    {"id":{"name":"s_warning","path":"sprites/s_warning/s_warning.yy",},"order":4,},
+    {"id":{"name":"s_warning","path":"sprites/s_warning/s_warning.yy",},"order":5,},
     {"id":{"name":"draw_set_text","path":"scripts/draw_set_text/draw_set_text.yy",},"order":12,},
     {"id":{"name":"in_range","path":"scripts/in_range/in_range.yy",},"order":1,},
     {"id":{"name":"f_p00","path":"fonts/f_p00/f_p00.yy",},"order":1,},
@@ -20,6 +20,7 @@
     {"id":{"name":"f_p2","path":"fonts/f_p2/f_p2.yy",},"order":3,},
     {"id":{"name":"color_data","path":"scripts/color_data/color_data.yy",},"order":13,},
     {"id":{"name":"f_p1","path":"fonts/f_p1/f_p1.yy",},"order":2,},
+    {"id":{"name":"s_complete","path":"sprites/s_complete/s_complete.yy",},"order":6,},
     {"id":{"name":"s_trigger","path":"sprites/s_trigger/s_trigger.yy",},"order":2,},
     {"id":{"name":"empty","path":"sprites/empty/empty.yy",},"order":3,},
     {"id":{"name":"s_candy_jar","path":"sprites/s_candy_jar/s_candy_jar.yy",},"order":2,},

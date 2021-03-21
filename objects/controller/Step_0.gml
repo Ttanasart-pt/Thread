@@ -15,14 +15,16 @@
 			is_running = false;
 			
 			if(candy_count != candy_expected) {
+				warning_type = 1;
 				warning_title = "Synchronization error";
 				warning_text = "Candy expected: " + string(candy_expected) + "\nCandy get: " + string(candy_count);
 				
 				if(USE_SEMAPHORE)
 					warning_text += "\n\nImplementing semaphore using software counter is prone to desynchronization. Try using wait then add instead";
 			} else {
-				warning_title = "";
-				warning_text = "";
+				warning_type = 2;
+				warning_title = "Synchronized";
+				warning_text = "Candy expected: " + string(candy_expected) + "\nCandy get: " + string(candy_count);
 			}
 		}
 	}

@@ -59,11 +59,23 @@
 		if(warning_title != "") {
 			var wx = cw / 2 + 70;
 			var wy = 300 + 110;
-		
-			draw_sprite_ext(s_warning, 0, wx, wy, 1, 1, -20 + sin(warning_runner) * 7, c_white, 1);
-			warning_runner += 0.35;
+			var hover = false;
 			
-			if(in_range(mx, wx - 20, wx + 40) && in_range(my, wy - 60, wy + 20)) {
+			switch(warning_type) {
+				case 1 :
+					draw_sprite_ext(s_warning, 0, wx, wy, 1, 1, -20 + sin(warning_runner) * 7, c_white, 1);
+					warning_runner += 0.35;
+					
+					if(in_range(mx, wx - 20, wx + 40) && in_range(my, wy - 60, wy + 20)) hover = true;
+					break;
+				case 2 :
+					draw_sprite_ext(s_complete, 0, wx, wy, 1, 1, 0, c_white, 1);
+					
+					if(in_range(mx, wx - 40, wx + 40) && in_range(my, wy - 40, wy + 40)) hover = true;
+					break;
+			}
+			
+			if(hover) {
 				tooltip = warning_title;
 				tooltip_sub = warning_text;
 			}
