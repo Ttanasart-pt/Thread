@@ -7,6 +7,16 @@
 	for(var i = 0; i < ds_list_size(actions); i++) {
 		var size = actions[| i].draw(jar_x, yy);
 		
+		#region drag
+			if(controller.drag_object == 0 && 
+				in_range(mouse_x, size[0], size[1]) && in_range(mouse_y, size[2], size[3])) {
+				actions[| i].draw_ext(jar_x, yy, c_white);
+				if(i && mouse_check_button_pressed(mb_left)) {
+					controller.drag_object = actions[| i];
+					del = i;
+				}
+			}
+		#endregion
 		#region connect
 			var ly1 = size[2];
 			var ly2 = size[3];
@@ -17,7 +27,7 @@
 				draw_set_color(c_white);
 				draw_circle(jar_x, ly2 + 6, 6, false);
 				
-				yy += 32;
+				yy += 51;
 			} else {
 				draw_set_color(actions[| i].color);
 				draw_circle(jar_x, ly2 + 6, 8, false);
@@ -25,11 +35,30 @@
 				draw_circle(jar_x, ly2 + 6, 4, false);
 			}
 		#endregion
-		#region drag
-			if(in_range(mouse_x, size[0], size[1]) && in_range(mouse_y, size[2], size[3])) {
-				if(i && mouse_check_button_pressed(mb_left)) {
-					controller.drag_object = actions[| i];
-					del = i;
+		#region condition
+			if(i && actions[| i - 1].condition && actions[| i].condition) {
+				var size_pre = actions[| i - 1].getSize();
+				var size_cur = actions[| i].getSize();
+				
+				var condx = jar_x - max(size_pre[0], size_cur[0]) / 2 - 24;
+				var condy = yy - size_cur[1] / 2 - 6;
+				
+				if(point_in_circle(mouse_x, mouse_y, condx, condy, 24)) {
+					draw_set_color(c_ui_blue);
+					draw_set_alpha(0.15);
+					draw_circle(condx, condy, 24, false);
+					draw_set_alpha(1);
+					
+					if(mouse_check_button_pressed(mb_left)) 
+						actions[| i - 1].cond_mode = (actions[| i - 1].cond_mode + 1) % 2;
+				}
+				
+				draw_set_text(f_p00, fa_center, fa_center);
+				draw_set_color(c_ui_blue);
+				
+				switch(actions[| i - 1].cond_mode) {
+					case 0 : draw_text(condx, condy, "OR"); break;
+					case 1 : draw_text(condx, condy, "AND"); break;
 				}
 			}
 		#endregion

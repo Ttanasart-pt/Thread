@@ -1,11 +1,7 @@
 /// @description init
 #region control
 	if(keyboard_check_pressed(vk_space)) {
-		if(!is_running) {
-			is_running = true;	
-			with(thread) 
-				run();
-		}
+		simulation_toggle();
 	}
 #endregion
 
@@ -15,7 +11,20 @@
 		with(thread)
 			if(action_index < ds_list_size(actions))
 				complete = false;
-		if(complete)
+		if(complete) {
 			is_running = false;
+			
+			if(candy_count != candy_expected) {
+				warning_title = "Synchronization error";
+				warning_text = "Candy expected: " + string(candy_expected) + "\nCandy get: " + string(candy_count);
+				
+				if(USE_SEMAPHORE) {
+					warning_text += "\n\nImplementing semaphore using software counter is prone to desynchronization. Try using wait then add instead";
+				}
+			} else {
+				warning_title = "";
+				warning_text = "";
+			}
+		}
 	}
 #endregion

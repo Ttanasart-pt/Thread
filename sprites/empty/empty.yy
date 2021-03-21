@@ -68,8 +68,8 @@
     {"visible":true,"isLocked":false,"blendMode":0,"opacity":100.0,"displayName":"default","resourceVersion":"1.0","name":"7402f550-a60d-4b6e-9b41-9c288e56fdf9","tags":[],"resourceType":"GMImageLayer",},
   ],
   "parent": {
-    "name": "thread",
-    "path": "thread.yyp",
+    "name": "UI",
+    "path": "folders/UI.yy",
   },
   "resourceVersion": "1.0",
   "name": "empty",

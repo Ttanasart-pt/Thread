@@ -39,7 +39,7 @@
   "roomSettings": {
     "inheritRoomSettings": false,
     "Width": 1366,
-    "Height": 768,
+    "Height": 860,
     "persistent": false,
   },
   "viewSettings": {
