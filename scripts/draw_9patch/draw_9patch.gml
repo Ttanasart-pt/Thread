@@ -19,7 +19,7 @@ function draw_9patch() {
 	var aa = argument[5];
 	var ss = argument[6];
 	var cc = argument_count >= 8?    argument[7] : c_white;
-	var mouse = argument_count >= 9? argument[8] : [device_mouse_x_to_gui(0), device_mouse_y_to_gui(0)];
+	var mouse = argument_count >= 9? argument[8] : [device_mx_to_gui(0), device_my_to_gui(0)];
 	var ch = argument_count >= 10?   argument[9] : merge_color(cc, c_white, .2);
 
 	var over = (in_range(mouse[0], xx, xx + ww) && in_range(mouse[1], yy, yy + hh)) && argument_count >= 9;

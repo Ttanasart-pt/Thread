@@ -27,9 +27,6 @@
 	
 	var cw = window_get_width();
 	var ch = window_get_height();
-
-	var mx = window_mouse_get_x();
-	var my = window_mouse_get_y();
 #endregion
 
 #region process
@@ -42,7 +39,7 @@
 		var sx = cw / 2;
 		var sy = ch - 115;
 		
-		if(point_in_circle(mouse_x, mouse_y, sx, sy, 24)) {
+		if(point_in_circle(mx, my, sx, sy, 24)) {
 			draw_set_color(c_ui_blue);
 			draw_set_alpha(0.25);
 			draw_circle(sx, sy, 24, false);
@@ -66,7 +63,7 @@
 			draw_sprite_ext(s_warning, 0, wx, wy, 1, 1, -20 + sin(warning_runner) * 7, c_white, 1);
 			warning_runner += 0.35;
 			
-			if(in_range(mouse_x, wx - 20, wx + 40) && in_range(mouse_y, wy - 60, wy + 20)) {
+			if(in_range(mx, wx - 20, wx + 40) && in_range(my, wy - 60, wy + 20)) {
 				tooltip = warning_title;
 				tooltip_sub = warning_text;
 			}
@@ -77,7 +74,7 @@
 		var aa = 1;
 		var tx = cw / 2;
 		var ty = 300 - 125;
-		if(point_in_circle(mouse_x, mouse_y, tx, ty, 20)) {
+		if(point_in_circle(mx, my, tx, ty, 20)) {
 			if(mouse_check_button_pressed(mb_left)) 
 				reset();
 		} else
@@ -134,7 +131,7 @@
 		ww = string_width(gen_names[i]);
 		hh = string_height(gen_names[i]);
 		
-		if(point_in_rectangle(mouse_x, mouse_y, gx, gy, gx + ww + 20, gy + hh + 20)) {
+		if(point_in_rectangle(mx, my, gx, gy, gx + ww + 20, gy + hh + 20)) {
 			draw_set_alpha(1);
 			if(mouse_check_button_pressed(mb_left)) {
 				switch(i) {
@@ -174,10 +171,10 @@
 	var yy = (add_y1 + add_y2) / 2;
 	for(var i = 0; i < array_length(add_items); i++) {
 		var size = add_items[i].draw_left(xx, yy);
-		if(in_range(mouse_x, size[0], size[1]) && in_range(mouse_y, size[2], size[3])) {
+		if(in_range(mx, size[0], size[1]) && in_range(my, size[2], size[3])) {
 			add_items[i].draw_left_color(xx, yy, c_white);
 			if(mouse_check_button_pressed(mb_left)) {
-				drag_object = new add_const[i](self);
+				drag_object = create_action(i);
 			}
 		}
 		xx = size[1] + 8;
@@ -191,13 +188,13 @@
 		with(thread) {
 			draw();
 			
-			if(in_range(mouse_x, area[0], area[1]) && in_range(mouse_y, area[2], area[3])) {
+			if(in_range(mx, area[0], area[1]) && in_range(my, area[2], area[3])) {
 				thread_target = self;
 				var yy = 200;				
 				for(var i = 0; i < ds_list_size(actions); i++) {
 					var size = actions[| i].getSize();
 					
-					if(in_range(mouse_y, yy + size[1] / 2, yy + size[1] * 1.5)) {
+					if(in_range(my, yy + size[1] / 2, yy + size[1] * 1.5)) {
 						space = i;
 					}
 					
@@ -207,7 +204,7 @@
 			}
 		}
 		
-		drag_object.draw(mouse_x, mouse_y);
+		drag_object.draw(mx, my);
 		if(mouse_check_button_released(mb_left)) {
 			if(thread_target != noone) {
 				drag_object.obj = thread_target;
@@ -221,8 +218,8 @@
 
 #region tooltip
 	if(tooltip != "") {
-		var tx = mouse_x + 8;
-		var ty = mouse_y + 8;
+		var tx = mx + 8;
+		var ty = my + 8;
 		var w_max = 300;
 		
 		draw_set_text(f_p1, fa_left, fa_top);

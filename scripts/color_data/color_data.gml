@@ -1,4 +1,6 @@
 #macro TIME_SEC				delta_time / 1000000
+#macro mx					window_mouse_get_x()
+#macro my					window_mouse_get_y()
 
 #region color
 	#macro c_ui_lime		$10d56e

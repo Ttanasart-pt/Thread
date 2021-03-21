@@ -50,24 +50,25 @@
 	run_speed = 1;
 	run_delay = 0.5;
 	
-	add_const = [
-		action_event_add,
-		action_event_remove,
-		
-		action_event_wait_turn,
-		action_event_set_turn,
-		
-		action_event_wait_flag,
-		action_event_set_flag,
-		action_event_reset_flag,
-		
-		action_event_wait_semaphore,
-		action_event_add_semaphore,
-		action_event_reduce_semaphore,
-		action_event_wait_semaphore_then_add,
-	];
-	for(var i = 0; i < array_length(add_const); i++)
-		add_items[i] = new add_const[i](self);		
+	function create_action(index) {
+		switch(index) {
+			case 0 :  return new action_event_add(self);					 
+			case 1 :  return new action_event_remove(self);				 
+			case 2 :  return new action_event_wait_turn(self);			 	 
+			case 3 :  return new action_event_set_turn(self);				 
+			case 4 :  return new action_event_wait_flag(self);			 	 
+			case 5 :  return new action_event_set_flag(self);				 
+			case 6 :  return new action_event_reset_flag(self);			 
+			case 7 :  return new action_event_wait_semaphore(self);		 
+			case 8 :  return new action_event_add_semaphore(self);		 	 
+			case 9 :  return new action_event_reduce_semaphore(self);		 
+			case 10 : return new action_event_wait_semaphore_then_add(self);
+		}
+	}
+	
+	for(var i = 0; i < 11; i++) {
+		add_items[i] = create_action(i);
+	}
 	
 	add_x	 = 0;
 	add_x_to = 0;

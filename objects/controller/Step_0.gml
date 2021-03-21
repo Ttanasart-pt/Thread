@@ -18,9 +18,8 @@
 				warning_title = "Synchronization error";
 				warning_text = "Candy expected: " + string(candy_expected) + "\nCandy get: " + string(candy_count);
 				
-				if(USE_SEMAPHORE) {
+				if(USE_SEMAPHORE)
 					warning_text += "\n\nImplementing semaphore using software counter is prone to desynchronization. Try using wait then add instead";
-				}
 			} else {
 				warning_title = "";
 				warning_text = "";

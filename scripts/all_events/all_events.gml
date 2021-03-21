@@ -1,7 +1,5 @@
 function draw_candybox(_x, _y, _candy) {
 	var cx1 = _x - 75;
-	var cx2 = _x + 75;
-	var cy1 = _y - 100;
 	var cy2 = _y + 100;
 	
 	draw_sprite_ext(s_candy_jar, 0, _x, _y, 1, 1, 0, c_ui_blue, .7);
@@ -135,7 +133,7 @@ function draw_candybox(_x, _y, _candy) {
 			var ty = _y;
 			
 			var aa = 1;
-			if(point_in_circle(mouse_x, mouse_y, tx, ty, 16)) {
+			if(point_in_circle(mx, my, tx, ty, 16)) {
 				if(mouse_check_button_pressed(mb_left)) trigger_action();
 			} else
 				aa = 0.5;

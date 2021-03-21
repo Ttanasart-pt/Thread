@@ -9,7 +9,7 @@
 		
 		#region drag
 			if(controller.drag_object == 0 && 
-				in_range(mouse_x, size[0], size[1]) && in_range(mouse_y, size[2], size[3])) {
+				in_range(mx, size[0], size[1]) && in_range(my, size[2], size[3])) {
 				actions[| i].draw_ext(jar_x, yy, c_white);
 				if(i && mouse_check_button_pressed(mb_left)) {
 					controller.drag_object = actions[| i];
@@ -18,7 +18,6 @@
 			}
 		#endregion
 		#region connect
-			var ly1 = size[2];
 			var ly2 = size[3];
 			
 			if(i == space) {
@@ -43,7 +42,7 @@
 				var condx = jar_x - max(size_pre[0], size_cur[0]) / 2 - 24;
 				var condy = yy - size_cur[1] / 2 - 6;
 				
-				if(point_in_circle(mouse_x, mouse_y, condx, condy, 24)) {
+				if(point_in_circle(mx, my, condx, condy, 24)) {
 					draw_set_color(c_ui_blue);
 					draw_set_alpha(0.15);
 					draw_circle(condx, condy, 24, false);
