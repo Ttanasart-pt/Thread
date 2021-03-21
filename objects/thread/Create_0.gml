@@ -1,62 +1,43 @@
 /// @description init
 #region actions
-	action_event = function() constructor {
-		step = 0;
-		
-		static jar_pick = function() {
-			candy_count = controller.candy_count;
-			
-			jar_show_x = lerp_float(jar_show_x, jar_x, 10);
-			jar_show_y = lerp_float(jar_show_y, jar_y, 10);
-				
-			return (jar_show_x == jar_x && jar_show_y == jar_y);
-		}
-		static jar_return = function() {
-			jar_show_x = lerp_float(jar_show_x, jar_x_start, 10);
-			jar_show_y = lerp_float(jar_show_y, jar_y_start, 10);
-			
-			return (jar_show_x == jar_x_start && jar_show_y == jar_y_start);
-		}
-		
-		static run = function() {}
-	}
+	actions = ds_list_create();
+	ds_list_add(actions, new action_event_start(self));
 	
-	action_event_add = function() : action_event() constructor {
-		static run = function() {
-			switch(step) {
-				case 0 : 
-					if(jar_pick()) 
-						step = 1; 
-					break;
-				case 1 : 
-					step = 2; 
-					break;
-				case 2 : 
-					if(jar_return()) {
-						step = 0; 
-						return true;
-					}
-					break;
-			}
-			return false;
-		}
-	}
-#endregion
-
-#region actions
-	actions = [
-		new action_event_add()
-	];
+	if(count)
+		ds_list_add(actions, new action_event_add(self));
+	else
+		ds_list_add(actions, new action_event_remove(self));
 	
 	action_index = 0;
 	runner = 0;
 	
 	candy_count = 0;
 	
-	jar_x = (count + 1) * window_get_width() / 3;
+	var side = (window_get_width() / 2 - 150) / 2;
+	jar_x = !count? side : window_get_width() - side;
 	jar_y = window_get_height() / 2;
 	jar_x_start = window_get_width() / 2;
 	jar_y_start = 300;
 	jar_show_x = jar_x_start;
 	jar_show_y = jar_y_start;
+	
+	area = [jar_x - 200, jar_x + 200, 100, window_get_height() - 160];
+	
+	space = -1;
+#endregion
+
+#region method
+	function run() {
+		action_index = 0;
+		runner = 0;
+	}
+	
+	function draw() {
+		draw_set_color($342626);
+		draw_set_alpha(0.25);
+		
+		draw_roundrect_ext(area[0], area[2], area[1], area[3], 32, 32, false);
+		
+		draw_set_alpha(1);
+	}
 #endregion

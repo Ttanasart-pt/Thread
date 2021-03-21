@@ -2,11 +2,11 @@
   "isDnD": false,
   "isCompatibility": false,
   "parent": {
-    "name": "function",
-    "path": "folders/function.yy",
+    "name": "draw",
+    "path": "folders/draw.yy",
   },
   "resourceVersion": "1.0",
-  "name": "all_events",
+  "name": "color_data",
   "tags": [],
   "resourceType": "GMScript",
 }

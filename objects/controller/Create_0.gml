@@ -9,9 +9,19 @@
 	
 	candy_count = 4;
 	
-	globalvar is_running, run_delay;
+	globalvar is_running, run_speed;
 	is_running = false;
-	run_delay = 1;
+	run_speed = 1;
+	
+	add_const = [
+		action_event_add,
+		action_event_remove
+	];
+	for(var i = 0; i < array_length(add_const); i++)
+		add_items[i] = new add_const[i](self);		
+	
+	adding = -1;
+	drag_object = 0;
 #endregion
 
 #region UI
