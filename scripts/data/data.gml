@@ -2,6 +2,9 @@
 #macro mx					window_mouse_get_x()
 #macro my					window_mouse_get_y()
 
+#macro RESIZE				true
+#macro itch:RESIZE			false
+
 #region color
 	#macro c_ui_lime		$10d56e
 	#macro c_ui_red			$3a51d7

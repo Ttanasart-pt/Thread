@@ -1,4 +1,7 @@
 {
+  "ConfigValues": {
+    "itch": {"option_html5_index":"use_default","option_html5_centregame":"false",},
+  },
   "option_html5_browser_title": "Scheduler",
   "option_html5_version": "1.0.0.0",
   "option_html5_foldername": "html5game",

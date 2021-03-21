@@ -13,7 +13,7 @@
 			
 			with(thread) init_jar();
 		}
-	} else {
+	} else if(RESIZE) {
 		if(window_w != browser_width || window_h != browser_height - 4) {
 			window_w = browser_width;
 			window_h = browser_height - 4;

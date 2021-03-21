@@ -6,7 +6,7 @@
     "path": "folders/draw.yy",
   },
   "resourceVersion": "1.0",
-  "name": "color_data",
+  "name": "data",
   "tags": [],
   "resourceType": "GMScript",
 }
