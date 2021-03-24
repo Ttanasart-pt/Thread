@@ -275,14 +275,15 @@ function get_candy_position(_index) {
 				candy_draw_index = obj.candy_count - 1;
 				candy_draw_color = make_color_hsv((obj.candy_count - 1) * 67, 180, 255);
 				candy_draw_rotation = (obj.candy_count - 1) * 28;
+				
+				obj.candy_count--;
+				controller.candy_expected--;
 			} else {
 				candy_drawing = true;
 				candy_draw_x = lerp_float(candy_draw_x, obj.jar_show_x, 10);
 				candy_draw_y = lerp_float(candy_draw_y, obj.jar_show_y - 150, 10);
 				
 				if(candy_draw_x == obj.jar_show_x && candy_draw_y == obj.jar_show_y - 150) {
-					obj.candy_count--;
-					controller.candy_expected--;
 					candy_drawing = false;
 					return true;
 				}
