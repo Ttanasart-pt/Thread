@@ -22,17 +22,11 @@
 			var ly2 = size[3];
 			
 			if(i == space) {
-				draw_set_color(actions[| i].color);
-				draw_circle(jar_x, ly2 + 6, 12, false);
-				draw_set_color(c_white);
-				draw_circle(jar_x, ly2 + 6, 6, false);
+				draw_sprite_ext(s_connector, 0, jar_x, ly2 + 6, .9, .9, 0, actions[| i].color, 1);
 				
 				yy += 51;
 			} else {
-				draw_set_color(actions[| i].color);
-				draw_circle(jar_x, ly2 + 6, 8, false);
-				draw_set_color(c_white);
-				draw_circle(jar_x, ly2 + 6, 4, false);
+				draw_sprite_ext(s_connector, 0, jar_x, ly2 + 6, .6, .6, 0, actions[| i].color, 1);
 			}
 		#endregion
 		#region condition

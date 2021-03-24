@@ -3,12 +3,17 @@
 	function simulation_toggle() {
 		warning_type = 0;
 		if(!is_running) {
-			reset();
+			if(reset_jar) reset();
 			is_running = true;	
 			with(thread) 
 				run();
 		} else {
 			is_running = false;
+			with(thread) {
+				for(var i = 0; i < ds_list_size(actions); i++) {
+					actions[| i].running = false;
+				}
+			}
 		}	
 	}
 	
@@ -57,6 +62,10 @@
 	is_running = false;
 	run_speed = 1;
 	run_delay = 0.5;
+	run_speeds = [0.5, 1, 2, 4];
+	run_speeds_index = 1;
+	
+	reset_jar = true;
 	
 	function create_action(index) {
 		switch(index) {
@@ -84,8 +93,20 @@
 	
 	drag_object = 0;
 	
+	globalvar tooltip, tooltip_sub;
 	tooltip = "";
 	tooltip_sub = "";
+	
+	info = @"Candy jar vs Parallel universes is a visualization of a common synchronization problem in a multithreaded system. 
+
+Each universe runs in parallel trying to add or remove candy from a candy jar by copying the jar to their universe, modify it, and return the jar into shared space.
+
+The problem is when two universes modify the jar differently and return it at the same time, this will cause synchronization problems. 
+
+On the top left you will see different solutions proposed by different people, each with pros and cons. You can also drag different actions to each universe to build your own algorithm.";
+
+	show_setting = false;
+	setting_angle = 0;
 #endregion
 
 #region UI

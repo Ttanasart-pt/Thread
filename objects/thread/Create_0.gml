@@ -42,9 +42,9 @@
 		}
 	}
 	
-	function draw() {
+	function draw(aa) {
 		draw_set_color(c_ui_blue_dark);
-		draw_set_alpha(0.25);
+		draw_set_alpha(aa);
 		
 		draw_roundrect_ext(area[0], area[2], area[1], area[3], 32, 32, false);
 		

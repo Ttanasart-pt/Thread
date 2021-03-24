@@ -33,11 +33,14 @@
 	var add_y1 = 0;
 	var add_y2 = 100;
 	
+	var show_info = false;
 	draw_sprite_ext(logo, 0, cw / 2, 80, .75, .75, 0, c_white, 1);
+	if(in_range(mx, cw / 2 - 200, cw / 2 + 200) && in_range(my, 80 - 60, 80 + 60)) 
+		show_info = true;
 	
 	#region simulation
 		var sx = cw / 2;
-		var sy = ch - 115;
+		var sy = ch - 110;
 		
 		if(point_in_circle(mx, my, sx, sy, 24)) {
 			if(mouse_check_button_pressed(mb_left)) 
@@ -46,6 +49,15 @@
 			tooltip_sub = "";
 		}
 		draw_sprite_ext(s_simulation, is_running, sx, sy, 1, 1, 0, c_white, 1);
+		
+		/*if(is_running) {
+			draw_sprite_ext(s_simulation, 2, sx - 48, sy, .75, .75, 0, c_white, 1);
+		} else {
+			draw_sprite_ext(s_simulation, 2, sx - 48, sy, .75, .75, 0, c_white, 0.25);		
+		}
+		
+		draw_sprite_ext(s_simulation, 3, sx + 48, sy, .75, .75, 0, c_white, 1);
+		*/
 	#endregion
 #endregion
 
@@ -100,42 +112,112 @@
 		draw_sprite_ext(s_reset, 0, tx, ty, 1, 1, 0, c_white, aa);
 	#endregion
 	
-	draw_set_color(c_white);
-	draw_set_text(f_p1, fa_center, fa_top);
-	draw_text(cw / 2, 430, "Turn");
-	draw_sprite_ext(s_turn, 0, cw / 2, 480, .8, .8, turn_angle, c_white, 1);
-	turn_angle = lerp_float(turn_angle, TURN * 180, 5);
+	#region turn
+		draw_set_color(c_white);
+		draw_set_text(f_p1, fa_center, fa_top);
+		draw_text(cw / 2, 430, "Turn");
+		draw_sprite_ext(s_turn, 0, cw / 2, 480, .8, .8, turn_angle, c_white, 1);
+		turn_angle = lerp_float(turn_angle, TURN * 180, 5);
+	#endregion
 	
 	draw_set_color(c_ui_blue_dark);
 	draw_line_width(cw / 2 - 50, 520, cw / 2 + 50, 520, 3);
 	
-	draw_set_color(c_white);
-	draw_set_text(f_p1, fa_center, fa_top);
-	draw_text(cw / 2, 540, "Flags");
-	var fg_x = cw / 2 - 28;
-	var fg_y = 600;
-	for(var i = 0; i < 2; i++) {
-		if(FLAG & (1 << i) != 0) {
-			draw_sprite_ext(s_flag, 1, fg_x, fg_y, 1, 1, 1, c_ui_blue, 1);
-		} else {
-			draw_sprite_ext(s_flag, 0, fg_x, fg_y, 1, 1, 1, c_ui_red, 0.5);
-		}
+	#region flags
+		draw_set_color(c_white);
+		draw_set_text(f_p1, fa_center, fa_top);
+		draw_text(cw / 2, 540, "Flags");
+		var fg_x = cw / 2 - 28;
+		var fg_y = 600;
+		for(var i = 0; i < 2; i++) {
+			if(FLAG & (1 << i) != 0) {
+				draw_sprite_ext(s_flag, 1, fg_x, fg_y, 1, 1, 1, c_ui_blue, 1);
+			} else {
+				draw_sprite_ext(s_flag, 0, fg_x, fg_y, 1, 1, 1, c_ui_red, 0.5);
+			}
 			
-		fg_x += 28 * 2;
-	}
+			fg_x += 28 * 2;
+		}
+	#endregion
 	
 	draw_set_color(c_ui_blue_dark);
 	draw_line_width(cw / 2 - 50, 640, cw / 2 + 50, 640, 3);
 	
-	draw_set_color(c_white);
-	draw_set_text(f_p1, fa_center, fa_top);
-	draw_text(cw / 2, 650, "Counter");
-	draw_set_text(f_p2, fa_center, fa_top);
-	draw_text(cw / 2, 680, string(SEMAPHORE));
+	#region counter
+		draw_set_color(c_white);
+		draw_set_text(f_p1, fa_center, fa_top);
+		draw_text(cw / 2, 650, "Counter");
+		draw_set_text(f_p2, fa_center, fa_top);
+		draw_text(cw / 2, 680, string(SEMAPHORE));
+	#endregion
 	
 	draw_set_color(c_ui_blue_dark);
-	draw_set_text(f_p0, fa_right, fa_top);
-	draw_text(cw - 8, 8, "For CSS225 Operating System\nBy Tanasart Phuangtong");
+	draw_set_text(f_p0, fa_right, fa_center);
+	draw_text(cw - 64, 32, "For CSS225 Operating System\nBy Tanasart Phuangtong");
+#endregion
+
+#region settings
+	var sx = cw - 32;
+	var sy = 32;
+	
+	draw_sprite_ext(s_settings, 0, sx, sy, .5, .5, 0, c_white, 0.3);
+	if(point_in_circle(mx, my, sx, sy, 24)) {
+		draw_sprite_ext(s_settings, 0, sx, sy, .5, .5, setting_angle, c_white, 0.6);
+		if(mouse_check_button_pressed(mb_left)) {
+			show_setting = !show_setting;
+		}
+	}
+	
+	if(show_setting) {
+		setting_angle = lerp_float(setting_angle, 60, 5);
+		var sx2 = cw - 64;
+		var sx1 = sx2 - 300;
+		var sy1 = 8;
+		var sy2 = sy1 + 100;
+		
+		draw_set_color(c_ui_blue_dark);
+		draw_roundrect_ext(sx1, sy1, sx2, sy2, 32, 32, false);
+		draw_set_color(c_ui_blue_black);
+		draw_roundrect_ext(sx1 + 2, sy1 + 2, sx2 - 2, sy2 - 2, 28, 28, false);
+		
+		#region speed
+			draw_set_text(f_p0, fa_left, fa_center);
+			draw_set_color(c_white);
+			draw_text(sx1 + 28, sy1 + 32, "Execute speed");
+				var ex = sx1 + 240;
+				var ey = sy1 + 32;
+				
+				if(point_in_rectangle(mx, my, ex - 40, ey - 15, ex + 40, ey + 15)) {
+					draw_set_color(c_ui_blue_dark);
+					draw_roundrect_ext(ex - 40, ey - 15, ex + 40, ey + 15, 30, 30, false);
+					
+					if(mouse_check_button_pressed(mb_left)) {
+						run_speeds_index = (run_speeds_index + 1) % array_length(run_speeds);
+						run_speed = run_speeds[run_speeds_index];
+					}
+				}
+				draw_set_text(f_p0, fa_center, fa_center);
+				draw_set_color(c_ui_blue);
+				draw_text(ex, ey, string(run_speed) + "x");
+		#endregion
+		#region reset
+			draw_set_color(c_white);
+			draw_set_text(f_p0, fa_left, fa_center);
+			draw_text(sx1 + 28, sy1 + 64, "Reset jar on start");
+			
+			var ex = sx1 + 240;
+			var ey = sy1 + 64;
+			
+			if(point_in_rectangle(mx, my, ex - 15, ey - 15, ex + 15, ey + 15)) {
+				if(mouse_check_button_pressed(mb_left))
+					reset_jar = !reset_jar;
+			}
+			
+			draw_sprite_ext(s_widget_toggler, reset_jar, ex, ey, 1, 1, 0, c_ui_blue, 1);
+		#endregion
+	} else {
+		setting_angle = lerp_float(setting_angle, 0, 5);	
+	}
 #endregion
 
 #region generation
@@ -208,8 +290,7 @@
 		var thread_target = noone;
 		
 		with(thread) {
-			draw();
-			
+			draw(0.25);
 			if(in_range(mx, area[0], area[1]) && in_range(my, area[2], area[3])) {
 				thread_target = self;
 				var yy = 200;				
@@ -274,4 +355,26 @@
 		draw_text_ext(tx + 16, yy, tooltip_sub, -1, w_max);
 	}
 	tooltip = "";
+#endregion
+
+#region show info
+	if(show_info) {
+		draw_set_text(f_p1, fa_center, fa_top);
+		var ww = 800;
+		var hh = string_height_ext(info, -1, ww - 64) + 40;
+		var x1 = cw / 2 - ww / 2;
+		var x2 = cw / 2 + ww / 2;
+		var y1 = 160;
+		var y2 = y1 + hh;
+		
+		draw_set_color(c_ui_blue_dark);
+		draw_roundrect_ext(x1, y1, x2, y2, 32, 32, false);
+		draw_set_color(c_ui_blue_black);
+		draw_roundrect_ext(x1 + 2, y1 + 2, x2 - 2, y2 - 2, 28, 28, false);
+		
+		draw_set_text(f_p1, fa_center, fa_top);
+		draw_set_color(c_ui_blue);
+		
+		draw_text_ext(cw / 2, y1 + 20, info, -1, ww - 64);
+	}
 #endregion
