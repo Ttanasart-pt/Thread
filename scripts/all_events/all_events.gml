@@ -21,6 +21,26 @@ function draw_candybox(_x, _y, _candy) {
 	}
 }
 
+function get_candy_position(_index) {
+	var cx1 = -75;
+	var cy1 = +100;
+	var line = 0;
+	var indx = 0;
+	var res = [0, 0];
+				
+	for(var i = 0; i <= _index; i++) {
+		res[0] = cx1 + 36 + indx * 40 + (line % 2) * 20;
+		res[1] = cy1 + 6 - line * 40 - 40;
+					
+		if(++indx > (line + 1) % 2 + 1) {
+			line++;
+			indx = 0;
+		}
+	}
+	
+	return res;
+}
+
 #region actions
 	function action_event(_obj) constructor {
 		step		 = 0;
@@ -68,9 +88,7 @@ function draw_candybox(_x, _y, _candy) {
 					}
 					break;
 				case 1 : 
-					if(runner == 0) action();
-					runner += TIME_SEC * run_speed;
-					if(runner > 1)
+					if(action())
 						step = 2; 
 					break;
 				case 2 : 
@@ -124,7 +142,10 @@ function draw_candybox(_x, _y, _candy) {
 		}
 		static draw = function(_x, _y) {
 			if(show_trigger) draw_trigger(_x, _y);
-			return draw_ext(_x, _y, color);	
+			if(running) draw_UI(_x, _y);
+			var size = draw_ext(_x, _y, color);
+			
+			return size;	
 		}
 		
 		static draw_trigger = function(_x, _y) {
@@ -132,14 +153,16 @@ function draw_candybox(_x, _y, _candy) {
 			var tx = _x + size[0] / 2 + 20;
 			var ty = _y;
 			
-			var aa = 1;
+			var aa = 0.9;
 			if(point_in_circle(mx, my, tx, ty, 16)) {
 				if(mouse_check_button_pressed(mb_left)) trigger_action();
 			} else
-				aa = 0.5;
+				aa = 0.3;
 			
-			draw_sprite_ext(s_trigger, 0, tx, ty, .75, .75, 0, c_ui_blue_grey, aa);
+			draw_sprite_ext(s_trigger, 0, tx, ty, .8, .8, 0, c_white, aa);
 		}
+		
+		static draw_UI = function(_x, _y) {}
 		
 		static getSize = function() {
 			draw_set_text(f_p0, fa_center, fa_center);
@@ -151,6 +174,22 @@ function draw_candybox(_x, _y, _candy) {
 		
 		static getDesp = function() {
 			return desp;	
+		}
+		
+		
+		dot_runner = 0;
+		static draw_dotted_to = function(x1, y1, x2, y2, shift) {
+			var size = getSize();
+			
+			draw_set_color(color);
+			draw_set_alpha(0.3);
+			
+			var xx = x1 + size[0] / 2 * (obj.count? -1 : 1);
+			draw_line_sprite(xx, y1, x2, y2, s_dot, 20, dot_runner);
+				
+			draw_set_alpha(1);
+			
+			dot_runner += shift * TIME_SEC * 60;
 		}
 	}
 	
@@ -168,9 +207,47 @@ function draw_candybox(_x, _y, _candy) {
 		desp  = "Add candy";
 		color = c_ui_lime;
 		
+		candy_draw_x = 0;
+		candy_draw_y = 0;
+		candy_target_x = 0;
+		candy_target_y = 0;
+		candy_draw_index = 0;
+		candy_draw_color = 0;
+		candy_draw_rotation = 0;
+		candy_drawing = false;
+		
 		static action = function() {
-			obj.candy_count++;
-			controller.candy_expected++;
+			if(runner == 0) {
+				candy_drawing = false;
+				candy_draw_x = obj.jar_show_x;
+				candy_draw_y = obj.jar_show_y - 150;
+				candy_draw_index = obj.candy_count;
+				candy_draw_color = make_color_hsv(obj.candy_count * 67, 180, 255);
+				candy_draw_rotation = obj.candy_count * 28;
+				
+				var candy_pos = get_candy_position(obj.candy_count);
+				candy_target_x = candy_pos[0];
+				candy_target_y = candy_pos[1];
+			} else {
+				candy_drawing = true;
+				candy_draw_x = lerp_float(candy_draw_x, obj.jar_show_x + candy_target_x, 10);
+				candy_draw_y = lerp_float(candy_draw_y, obj.jar_show_y + candy_target_y, 10);
+				
+				if(candy_draw_x == obj.jar_show_x + candy_target_x && candy_draw_y == obj.jar_show_y + candy_target_y) {
+					obj.candy_count++;
+					controller.candy_expected++;
+					candy_drawing = false;
+					return true;
+				}
+			}
+			runner++;
+			return false;
+		}
+		
+		static draw_UI = function(_x, _y) {
+			if(candy_drawing) {
+				draw_sprite_ext(s_candy, candy_draw_index, candy_draw_x, candy_draw_y, 1, 1, candy_draw_rotation, candy_draw_color, 1);
+			}
 		}
 	}
 	
@@ -178,9 +255,46 @@ function draw_candybox(_x, _y, _candy) {
 		desp  = "Remove candy";
 		color = c_ui_red;
 		
+		candy_draw_x = 0;
+		candy_draw_y = 0;
+		candy_target_x = 0;
+		candy_target_y = 0;
+		candy_draw_index = 0;
+		candy_draw_color = 0;
+		candy_draw_rotation = 0;
+		candy_drawing = false;
+		
 		static action = function() {
-			obj.candy_count--;
-			controller.candy_expected--;
+			if(runner == 0) {
+				candy_drawing = false;
+				
+				var candy_pos = get_candy_position(obj.candy_count - 1);
+				candy_draw_x = obj.jar_show_x + candy_pos[0];
+				candy_draw_y = obj.jar_show_y + candy_pos[1];
+				
+				candy_draw_index = obj.candy_count - 1;
+				candy_draw_color = make_color_hsv((obj.candy_count - 1) * 67, 180, 255);
+				candy_draw_rotation = (obj.candy_count - 1) * 28;
+			} else {
+				candy_drawing = true;
+				candy_draw_x = lerp_float(candy_draw_x, obj.jar_show_x, 10);
+				candy_draw_y = lerp_float(candy_draw_y, obj.jar_show_y - 150, 10);
+				
+				if(candy_draw_x == obj.jar_show_x && candy_draw_y == obj.jar_show_y - 150) {
+					obj.candy_count--;
+					controller.candy_expected--;
+					candy_drawing = false;
+					return true;
+				}
+			}
+			runner++;
+			return false;
+		}
+		
+		static draw_UI = function(_x, _y) {
+			if(candy_drawing) {
+				draw_sprite_ext(s_candy, candy_draw_index, candy_draw_x, candy_draw_y, 1, 1, candy_draw_rotation, candy_draw_color, 1);
+			}
 		}
 	}
 	
@@ -199,10 +313,14 @@ function draw_candybox(_x, _y, _candy) {
 		}
 		
 		static getDesp = function() {
-			return desp + " " + string(turn);
+			return "Wait for " + (turn? "Left" : "Right") + " turn";
 		}
 		
 		static trigger_action = function() { turn = (turn + 1) % 2; }
+		
+		static draw_UI = function(_x, _y) {
+			draw_dotted_to(_x, _y, window_get_width() / 2, 480, -1);
+		}
 	}
 	
 	function action_event_set_turn(_obj) : action_event(_obj) constructor {
@@ -233,10 +351,14 @@ function draw_candybox(_x, _y, _candy) {
 		}
 		
 		static getDesp = function() {
-			return desp + " " + string(turn);
+			return desp + " " + (turn? "Left" : "Right");
 		}
 		
 		static trigger_action = function() { turn = (turn + 1) % 2; }
+		
+		static draw_UI = function(_x, _y) {
+			draw_dotted_to(_x, _y, window_get_width() / 2, 480, 1);
+		}
 	}
 	
 	function action_event_wait_flag(_obj) : action_event(_obj) constructor {
@@ -260,6 +382,10 @@ function draw_candybox(_x, _y, _candy) {
 		}
 		
 		static trigger_action = function() { flag = (flag + 1) % 2; }
+		
+		static draw_UI = function(_x, _y) {
+			draw_dotted_to(_x, _y, window_get_width() / 2 + (28 * (flag * 2 - 1)), 600, -1);
+		}
 	}
 	
 	function action_event_set_flag(_obj) : action_event(_obj) constructor {
@@ -294,6 +420,10 @@ function draw_candybox(_x, _y, _candy) {
 		}
 		
 		static trigger_action = function() { flag = (flag + 1) % 2; }
+		
+		static draw_UI = function(_x, _y) {
+			draw_dotted_to(_x, _y, window_get_width() / 2 + (28 * (flag * 2 - 1)), 600, 1);
+		}
 	}
 	
 	function action_event_reset_flag(_obj) : action_event(_obj) constructor {
@@ -328,6 +458,10 @@ function draw_candybox(_x, _y, _candy) {
 		}
 		
 		static trigger_action = function() { flag = (flag + 1) % 2; }
+		
+		static draw_UI = function(_x, _y) {
+			draw_dotted_to(_x, _y, window_get_width() / 2 + (28 * (flag * 2 - 1)), 600, 1);
+		}
 	}
 	
 	function action_event_wait_semaphore(_obj) : action_event(_obj) constructor {
@@ -360,6 +494,10 @@ function draw_candybox(_x, _y, _candy) {
 		}
 		
 		static trigger_action = function() { mode = (mode + 1) % 3; }
+		
+		static draw_UI = function(_x, _y) {
+			draw_dotted_to(_x, _y, window_get_width() / 2, 680, -1);
+		}
 	}
 	
 	function action_event_add_semaphore(_obj) : action_event(_obj) constructor {
@@ -385,6 +523,10 @@ function draw_candybox(_x, _y, _candy) {
 			}
 			USE_SEMAPHORE = true;
 			return false;
+		}
+		
+		static draw_UI = function(_x, _y) {
+			draw_dotted_to(_x, _y, window_get_width() / 2, 680, 1);
 		}
 	}
 	
@@ -412,6 +554,10 @@ function draw_candybox(_x, _y, _candy) {
 			USE_SEMAPHORE = true;
 			return false;
 		}
+		
+		static draw_UI = function(_x, _y) {
+			draw_dotted_to(_x, _y, window_get_width() / 2, 680, 1);
+		}
 	}
 	
 	function action_event_wait_semaphore_then_add(_obj) : action_event(_obj) constructor {
@@ -433,5 +579,9 @@ function draw_candybox(_x, _y, _candy) {
 		}
 		
 		static trigger_action = function() { mode = (mode + 1) % 3; }
+		
+		static draw_UI = function(_x, _y) {
+			draw_dotted_to(_x, _y, window_get_width() / 2, 680, 1);
+		}
 	}
 #endregion

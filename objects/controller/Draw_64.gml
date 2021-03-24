@@ -40,15 +40,12 @@
 		var sy = ch - 115;
 		
 		if(point_in_circle(mx, my, sx, sy, 24)) {
-			draw_set_color(c_ui_blue);
-			draw_set_alpha(0.25);
-			draw_circle(sx, sy, 24, false);
-			draw_set_alpha(1);
-			
 			if(mouse_check_button_pressed(mb_left)) 
 				simulation_toggle();
+			tooltip = is_running? "Stop simulation" : "Start simulation";
+			tooltip_sub = "";
 		}
-		draw_sprite_ext(s_simulation, is_running, sx, sy, 1, 1, 0, is_running? c_ui_red : c_ui_lime, 1);
+		draw_sprite_ext(s_simulation, is_running, sx, sy, 1, 1, 0, c_white, 1);
 	#endregion
 #endregion
 
@@ -69,7 +66,8 @@
 					if(in_range(mx, wx - 20, wx + 40) && in_range(my, wy - 60, wy + 20)) hover = true;
 					break;
 				case 2 :
-					draw_sprite_ext(s_complete, 0, wx, wy, 1, 1, 0, c_white, 1);
+					draw_sprite_ext(s_complete, 0, wx, wy, 1, 1, sin(warning_runner) * 7, c_white, 1);
+					warning_runner += 0.15;
 					
 					if(in_range(mx, wx - 40, wx + 40) && in_range(my, wy - 40, wy + 40)) hover = true;
 					break;
@@ -83,23 +81,30 @@
 	#endregion
 	
 	#region reset
-		var aa = 1;
+		var aa = 0.9;
 		var tx = cw / 2;
 		var ty = 300 - 125;
 		if(point_in_circle(mx, my, tx, ty, 20)) {
-			if(mouse_check_button_pressed(mb_left)) 
+			if(mouse_check_button_pressed(mb_left)) {
 				reset();
+				with(thread) {
+					ds_list_clear(actions);
+					ds_list_add(actions, new action_event_start(self));
+				}
+			}
+			tooltip = "Reset universes";
+			tooltip_sub = "";
 		} else
-			aa = 0.5;
+			aa = 0.3;
 			
-		draw_sprite_ext(s_reset, 0, tx, ty, 1, 1, 0, c_ui_blue_grey, aa);
+		draw_sprite_ext(s_reset, 0, tx, ty, 1, 1, 0, c_white, aa);
 	#endregion
 	
 	draw_set_color(c_white);
 	draw_set_text(f_p1, fa_center, fa_top);
-	draw_text(cw / 2, 450, "Turn");
-	draw_set_text(f_p2, fa_center, fa_top);
-	draw_text(cw / 2, 480, string(TURN));
+	draw_text(cw / 2, 430, "Turn");
+	draw_sprite_ext(s_turn, 0, cw / 2, 480, .8, .8, turn_angle, c_white, 1);
+	turn_angle = lerp_float(turn_angle, TURN * 180, 5);
 	
 	draw_set_color(c_ui_blue_dark);
 	draw_line_width(cw / 2 - 50, 520, cw / 2 + 50, 520, 3);
@@ -138,7 +143,7 @@
 	var gy = 16;
 	var ww;
 	
-	draw_set_text(f_p0, fa_left, fa_left);
+	draw_set_text(f_p0, fa_center, fa_left);
 	for(var i = 0; i < array_length(gen_names); i++) {
 		ww = string_width(gen_names[i]);
 		hh = string_height(gen_names[i]);
@@ -147,16 +152,21 @@
 			draw_set_alpha(1);
 			if(mouse_check_button_pressed(mb_left)) {
 				switch(i) {
-					case 0 : set_peterson();	break;	
-					case 1 : set_semaphore();	break;	
+					case 0 : set_turn();				break;	
+					case 1 : set_peterson();			break;	
+					case 2 : set_semaphore_software();	break;	
+					case 3 : set_semaphore_hardware();	break;	
 				}
-			}	
+			}
+			
+			tooltip     = gen_tooltips[i][0];
+			tooltip_sub = gen_tooltips[i][1];
 		} else
 			draw_set_alpha(0.5);
 		draw_set_color(c_ui_blue);
-		draw_text(gx + 10, gy + 10, gen_names[i])
+		draw_text(gx + 10 + ww / 2, gy + 10, gen_names[i])
 		
-		gx += ww + 20;
+		gx += ww + 24;
 	}
 #endregion
 
@@ -232,13 +242,21 @@
 	if(tooltip != "") {
 		var tx = mx + 8;
 		var ty = my + 8;
-		var w_max = 300;
+		var w_max = 360;
 		
 		draw_set_text(f_p1, fa_left, fa_top);
-		var ww = 32 + max(string_width_ext(tooltip, -1, w_max), string_width_ext(tooltip_sub, -1, w_max));
-		var hh = 32 + string_height_ext(tooltip, -1, w_max);
+		var wt = string_width_ext(tooltip, -1, w_max);
+		var ht = string_height_ext(tooltip, -1, w_max);
+		
 		draw_set_text(f_p0, fa_left, fa_top);
-		hh += 4 + string_height_ext(tooltip_sub, -1, w_max);
+		var ws = string_width_ext(tooltip_sub, -1, w_max);
+		
+		var ww = 32 + max(wt, ws);
+		var hh = 32 + ht;
+		draw_set_text(f_p0, fa_left, fa_top);
+		
+		if(tooltip_sub != "")
+			hh += 4 + string_height_ext(tooltip_sub, -1, w_max);
 		
 		draw_set_color(c_ui_blue_dark);
 		draw_roundrect_ext(tx, ty, tx + ww, ty + hh, 32, 32, false);

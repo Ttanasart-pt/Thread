@@ -27,14 +27,26 @@
 #endregion
 
 #region generators
-	gen_names = ["Peterson", "Semaphore"];
+	gen_names = ["Turn", "Peterson", "Semaphore\nsoftware", "Semaphore\nhardware"];
+	gen_tooltips = [
+		["Turn only",
+			"Swapping turn on each thread works, but it can be slow since each thread need to wait for other thread even if there's no instruction on other thread."],
+		["Peterson's algorithm", 
+			"Invented by Gary L. Peterson, this algorithm relies on turn and flags to solve a problem from turn only system.\n\nA thread will flag up only if they have some instruction to run preventing wait for nothing event."],
+		["Software implemented semaphore", 
+			"Semaphore is a counter that can be compared and add in one instruction (atomic operation).\n\nImplementing semaphore require hardware support, this example show what happened if you use software to implement it."],
+		["Hardward implemented semaphore", 
+			"Here use hardware implemented special instruction 'test_and_set' to run semaphore correctly."]
+	]
 #endregion
 
 #region data
 	window_w = 0;
 	window_h = 0;
 	
+	count = 0;
 	warning_runner = 0;
+	turn_angle = 0;
 	
 	globalvar TURN, FLAG, SEMAPHORE;
 	globalvar USE_SEMAPHORE;

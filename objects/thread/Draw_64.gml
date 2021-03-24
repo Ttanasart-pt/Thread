@@ -10,6 +10,7 @@
 		#region drag
 			if(controller.drag_object == 0 && 
 				in_range(mx, size[0], size[1]) && in_range(my, size[2], size[3])) {
+					actions[| i].draw_UI(jar_x, yy);
 				actions[| i].draw_ext(jar_x, yy, c_white);
 				if(i && mouse_check_button_pressed(mb_left)) {
 					controller.drag_object = actions[| i];
